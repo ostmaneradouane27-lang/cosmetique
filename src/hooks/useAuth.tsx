@@ -61,7 +61,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (data) {
-        setUser(data as UserProfile);
+        setUser({
+          uid: data.uid,
+          email: data.email,
+          displayName: data.display_name,
+          role: data.role,
+          storeId: data.store_id,
+          createdAt: new Date(data.created_at).getTime()
+        });
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -104,11 +111,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const { error: profileError } = await supabase
         .from('profiles')
-        .insert([newUser]);
+        .insert([{
+          uid: authUser.id,
+          email,
+          display_name: name,
+          role: email === 'ostmaneradouane27@gmail.com' ? UserRole.OWNER : UserRole.CASHIER,
+          store_id: 'pending',
+          created_at: new Date().toISOString()
+        }]);
 
       if (profileError) throw profileError;
       
-      setUser(newUser);
+      setUser({
+        uid: authUser.id,
+        email,
+        displayName: name,
+        role: email === 'ostmaneradouane27@gmail.com' ? UserRole.OWNER : UserRole.CASHIER,
+        storeId: 'pending',
+        createdAt: Date.now(),
+      });
     } catch (error) {
       handleSupabaseError(error, OperationType.WRITE, 'profiles');
       throw error;

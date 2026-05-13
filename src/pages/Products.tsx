@@ -87,7 +87,19 @@ export default function Products() {
         .eq('store_id', user.storeId);
       
       if (error) throw error;
-      setProducts(data as any[]);
+      setProducts(data.map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        barcode: p.barcode,
+        categoryId: p.category_id,
+        brand: p.brand,
+        buyingPrice: Number(p.buying_price),
+        sellingPrice: Number(p.selling_price),
+        stock: p.stock,
+        minStock: p.min_stock,
+        storeId: p.store_id,
+        updatedAt: new Date(p.updated_at).getTime()
+      })));
     } catch (error) {
       handleSupabaseError(error, OperationType.LIST, 'products');
     } finally {

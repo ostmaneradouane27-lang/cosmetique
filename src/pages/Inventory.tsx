@@ -46,7 +46,15 @@ export default function Inventory() {
       
       if (error) throw error;
       setMoves(data?.map(d => ({
-        ...d,
+        id: d.id,
+        productId: d.product_id,
+        productName: d.product_name,
+        type: d.type,
+        quantity: d.quantity,
+        balance: d.balance,
+        userId: d.user_id,
+        userName: d.user_name,
+        storeId: d.store_id,
         date: new Date(d.created_at).toLocaleString()
       })) || []);
     } catch (error) {

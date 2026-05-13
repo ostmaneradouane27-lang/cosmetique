@@ -11,7 +11,7 @@ import { BackgroundGradientAnimation } from '@/components/ui/background-gradient
 
 export default function Login() {
   const [email, setEmail] = useState('ostmaneradouane27@gmail.com');
-  const [password, setPassword] = useState('123456');
+  const [password, setPassword] = useState('redoredo27');
   const [showPass, setShowPass] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const { login } = useAuth();

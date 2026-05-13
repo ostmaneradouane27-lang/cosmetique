@@ -51,7 +51,19 @@ export default function POS() {
         .eq('store_id', user.storeId);
       
       if (error) throw error;
-      setProducts(data as any[]);
+      setProducts(data.map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        barcode: p.barcode,
+        categoryId: p.category_id,
+        brand: p.brand,
+        buyingPrice: Number(p.buying_price),
+        sellingPrice: Number(p.selling_price),
+        stock: p.stock,
+        minStock: p.min_stock,
+        storeId: p.store_id,
+        updatedAt: new Date(p.updated_at).getTime()
+      })));
     } catch (error) {
        console.error('Fetch products error:', error);
     }
@@ -163,6 +175,7 @@ export default function POS() {
           payment_method: paymentMethod,
           cashier_id: user.uid,
           store_id: storeId,
+          items_count: cart.reduce((sum, i) => sum + i.quantity, 0),
           created_at: new Date().toISOString()
         }])
         .select()
@@ -185,14 +198,30 @@ export default function POS() {
 
       if (itemsError) throw itemsError;
 
-      // 3. Stock Update
+      // 3. Stock Update & Inventory Log
       for (const item of cart) {
         const product = products.find(p => p.id === item.productId);
         if (product) {
+          const newStock = product.stock - item.quantity;
+          
           await supabase
             .from('products')
-            .update({ stock: product.stock - item.quantity })
+            .update({ stock: newStock })
             .eq('id', item.productId);
+
+          await supabase
+            .from('inventory_log')
+            .insert([{
+              product_id: item.productId,
+              product_name: item.name,
+              type: 'SALE',
+              quantity: -item.quantity,
+              balance: newStock,
+              user_id: user.uid,
+              user_name: user.displayName,
+              store_id: storeId,
+              created_at: new Date().toISOString()
+            }]);
         }
       }
 

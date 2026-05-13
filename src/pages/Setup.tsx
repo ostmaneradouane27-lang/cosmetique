@@ -58,7 +58,7 @@ export default function Setup() {
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
-          storeId: storeId,
+          store_id: storeId,
           role: 'owner'
         })
         .eq('uid', user.uid);

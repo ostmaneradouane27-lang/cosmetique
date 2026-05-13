@@ -51,7 +51,14 @@ export default function Customers() {
         .eq('store_id', user.storeId);
       
       if (error) throw error;
-      setCustomers(data || []);
+      setCustomers(data?.map((c: any) => ({
+        id: c.id,
+        name: c.name,
+        email: c.email,
+        phone: c.phone,
+        storeId: c.store_id,
+        createdAt: new Date(c.created_at).getTime()
+      })) || []);
     } catch (error) {
       handleSupabaseError(error, OperationType.LIST, 'customers');
     } finally {
