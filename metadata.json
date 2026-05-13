@@ -1,0 +1,6 @@
+{
+  "name": "CosmoPOS",
+  "description": "Premium SaaS POS and inventory management system for cosmetic and beauty stores, featuring barcode scanning, real-time analytics, and customer loyalty programs.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": []
+}
